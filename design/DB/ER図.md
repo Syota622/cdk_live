@@ -1,5 +1,8 @@
 ```mermaid
 erDiagram
+
+  direction LR
+
   USER ||--o{ CHANNEL : owns
   CHANNEL ||--o{ LIVE : hosts
   LIVE ||--o{ COMMENT : has
