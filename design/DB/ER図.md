@@ -11,42 +11,57 @@ erDiagram
   COMMENT ||--o{ LIKE : receives
 
   USER {
-    string userId PK
+    string userId
     string name
     string email
     string avatarUrl
+    datetime createdAt
   }
 
   CHANNEL {
-    string channelId PK
+    string channelId
+    string ownerId
     string name
     string description
-    string ownerId FK
+    datetime createdAt
+    datetime updatedAt
   }
 
   LIVE {
-    string liveId PK
-    string channelId FK
+    string liveId
+    string channelId
     string title
+    string description
     string status
-  }
-
-  ARCHIVE {
-    string archiveId PK
-    string liveId FK
-    string s3Url
+    string ivsChannelArn
+    string thumbnailUrl
+    datetime startTime
+    datetime endTime
+    datetime createdAt
+    datetime updatedAt
   }
 
   COMMENT {
-    string commentId PK
-    string liveId FK
-    string userId FK
+    string liveId
+    string commentId
+    string userId
     string content
+    datetime createdAt
+  }
+
+  ARCHIVE {
+    string archiveId
+    string liveId
+    string s3Url
+    int duration
+    datetime createdAt
   }
 
   LIKE {
     string targetId
     string userId
+    string targetType
+    datetime createdAt
   }
 
 ```
