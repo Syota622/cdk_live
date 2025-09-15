@@ -3,15 +3,8 @@ erDiagram
 
   direction LR
 
-  USER ||--o{ CHANNEL : owns
-  CHANNEL ||--o{ LIVE : hosts
-  LIVE ||--o{ COMMENT : has
-  LIVE }o--|| ARCHIVE : produces
-  LIVE ||--o{ LIKE : receives
-  COMMENT ||--o{ LIKE : receives
-
   USER {
-    string userId
+    string userId_PK
     string name
     string email
     string avatarUrl
@@ -19,8 +12,8 @@ erDiagram
   }
 
   CHANNEL {
-    string channelId
-    string ownerId
+    string channelId_PK
+    string ownerId_FK
     string name
     string description
     datetime createdAt
@@ -28,8 +21,8 @@ erDiagram
   }
 
   LIVE {
-    string liveId
-    string channelId
+    string liveId_PK
+    string channelId_FK
     string title
     string description
     string status
@@ -42,26 +35,34 @@ erDiagram
   }
 
   COMMENT {
-    string liveId
-    string commentId
-    string userId
+    string liveId_PK
+    string commentId_SK
+    string userId_FK
     string content
     datetime createdAt
   }
 
   ARCHIVE {
-    string archiveId
-    string liveId
+    string archiveId_PK
+    string liveId_FK
     string s3Url
     int duration
     datetime createdAt
   }
 
   LIKE {
-    string targetId
-    string userId
+    string targetId_PK
+    string userId_SK
     string targetType
     datetime createdAt
   }
+
+  USER ||--o{ CHANNEL : owns
+  CHANNEL ||--o{ LIVE : hosts
+  LIVE ||--o{ COMMENT : has
+  LIVE }o--|| ARCHIVE : produces
+  LIVE ||--o{ LIKE : receives
+  COMMENT ||--o{ LIKE : receives
+
 
 ```
