@@ -1,14 +1,22 @@
-# Welcome to your CDK TypeScript project
-
-This is a blank project for CDK development with TypeScript.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+# directry
+livestream-hub-infrastructure/
+├── bin/
+│   └── livestream-hub-infrastructure.ts
+├── lib/
+│   ├── stacks/
+│   │   ├── auth/           # Cognito認証スタック
+│   │   ├── database/       # DynamoDB関連
+│   │   ├── api/           # AppSync API
+│   │   ├── storage/       # S3, CloudFront
+│   │   └── streaming/     # IVS関連
+│   ├── constructs/        # 再利用可能なコンストラクト
+│   └── livestream-hub-stack.ts
+├── config/
+│   ├── dev/              # 開発環境設定
+│   ├── qas/              # QA環境設定
+│   ├── stg/              # ステージング環境設定
+│   └── prd/              # 本番環境設定
+├── lambda/
+│   ├── resolvers/        # AppSync Resolver
+│   └── functions/        # Lambda関数
+└── scripts/              # デプロイスクリプト
