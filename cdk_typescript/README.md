@@ -20,3 +20,15 @@ livestream-hub-infrastructure/
 │   ├── resolvers/        # AppSync Resolver
 │   └── functions/        # Lambda関数
 └── scripts/              # デプロイスクリプト
+
+# コマンド
+```bash
+# 構文確認
+cdk synth
+
+# 差分確認
+cdk diff
+
+# デプロイ
+cdk deploy
+```
