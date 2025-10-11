@@ -1,2 +1,1 @@
-# Lambda モジュール
-
+# Mobile Lambda function construct

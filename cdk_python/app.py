@@ -7,7 +7,7 @@ import aws_cdk as cdk
 # libフォルダをパスに追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
-from cdk.api_gateway_stack import ApiGatewayStack
+from cdk.common_stack import ApiGatewayStack
 
 
 app = cdk.App()

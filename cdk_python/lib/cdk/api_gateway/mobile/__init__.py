@@ -1,2 +1,1 @@
-# API Gateway モジュール
-
+# Mobile API Gateway construct
