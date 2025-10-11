@@ -45,16 +45,19 @@ class ApiGatewayConstruct(Construct):
 
     def _add_items_endpoints(self) -> None:
         """
-        /items と /items/{id} エンドポイントを追加
+        /items エンドポイントを追加
+        
+        IDの取得や処理はLambda関数側で実装します。
+        - GET /items?id=xxx : 特定アイテム取得
+        - GET /items : アイテム一覧取得
+        - POST /items : アイテム作成
+        - PUT /items : アイテム更新（IDはリクエストボディに含む）
+        - DELETE /items?id=xxx : アイテム削除
         """
         # /items エンドポイント
         items = self.api.root.add_resource("items")
-        items.add_method("GET")   # アイテム一覧取得
-        items.add_method("POST")  # アイテム作成
-
-        # /items/{id} エンドポイント
-        item = items.add_resource("{id}")
-        item.add_method("GET")     # 特定アイテム取得
-        item.add_method("PUT")     # アイテム更新
-        item.add_method("DELETE")  # アイテム削除
-
+        items.add_method("GET")     # アイテム一覧取得 or 特定アイテム取得（クエリパラメータでid指定）
+        items.add_method("POST")    # アイテム作成
+        items.add_method("PUT")     # アイテム更新（リクエストボディにid含む）
+        items.add_method("DELETE")  # アイテム削除（クエリパラメータでid指定）
+        
