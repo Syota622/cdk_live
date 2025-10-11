@@ -27,15 +27,25 @@ class ApiGatewayStack(Stack):
                     api_gateway.py          (API Gateway構築)
     """
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(
+        self, 
+        scope: Construct, 
+        construct_id: str, 
+        pj_name: str,
+        **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         # Lambda関数の作成
-        mobile_hello_get = ApiLambdaConstruct(self, "LambdaConstruct")
+        mobile_hello_get = ApiLambdaConstruct(
+            self, "LambdaConstruct",
+            pj_name=pj_name
+        )
 
         # API Gatewayの作成
         api_gateway_construct = ApiGatewayConstruct(
             self, "ApiGatewayConstruct",
+            pj_name=pj_name,
             lambda_function=mobile_hello_get.function
         )
 

@@ -16,6 +16,7 @@ class ApiLambdaConstruct(Construct):
         self, 
         scope: Construct, 
         construct_id: str,
+        pj_name: str,
         **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -28,6 +29,7 @@ class ApiLambdaConstruct(Construct):
             code=_lambda.Code.from_asset(
                 os.path.join(os.path.dirname(__file__), "..", "..", "..", "backend")
             ),
+            function_name=f"{pj_name}-lambda-api-handler",
             description="API Gatewayのバックエンド処理を行うLambda関数",
         )
 

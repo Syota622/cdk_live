@@ -1,2 +1,3 @@
 - source .venv/bin/activate
 - pip install -r requirements.txt
+- cdk deploy --require-approval never

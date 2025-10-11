@@ -11,7 +11,13 @@ from cdk.common_stack import ApiGatewayStack
 
 
 app = cdk.App()
-ApiGatewayStack(app, "ApiGatewayStack",
+
+# 環境変数からプロジェクト名を取得（デフォルト: "livestream"）
+pj_name = os.getenv('PJ_NAME', 'livestream')
+
+ApiGatewayStack(
+    app, "ApiGatewayStack",
+    pj_name=pj_name,
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
