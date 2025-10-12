@@ -1,5 +1,6 @@
 from aws_cdk import (
     aws_lambda as _lambda,
+    aws_dynamodb as dynamodb,
 )
 from constructs import Construct
 import os
@@ -18,6 +19,7 @@ class ApiLambdaConstruct(Construct):
         construct_id: str,
         pj_name: str,
         env_name: str,
+        hello_table: dynamodb.Table,
         **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -32,5 +34,11 @@ class ApiLambdaConstruct(Construct):
             ),
             function_name=f"{pj_name}-{env_name}-lambda-api-handler",
             description="API Gatewayのバックエンド処理を行うLambda関数",
+            environment={
+                "HELLO_TABLE_NAME": hello_table.table_name,
+            }
         )
+
+        # DynamoDBテーブルへのアクセス権限を付与
+        hello_table.grant_read_write_data(self.function)
 

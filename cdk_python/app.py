@@ -12,40 +12,36 @@ from cdk.common_stack import ApiGatewayStack
 
 app = cdk.App()
 
-# プロジェクト名を取得（コンテキストまたはデフォルト値）
-# cdk deploy DevStack -c pj_name=myproject のように指定可能
-pj_name = app.node.try_get_context('pj_name') or 'livestream'
-
 # 開発環境のスタック
 ApiGatewayStack(
     app, "DevStack",
-    pj_name=pj_name,
+    pj_name='livestream',
     env_name='dev',
     env=cdk.Environment(
-        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-        region=os.getenv('CDK_DEFAULT_REGION')
+        account='235484765172',  # 自分のAWSアカウントIDに変更
+        region='ap-northeast-1'
     ),
 )
 
 # ステージング環境のスタック
 ApiGatewayStack(
     app, "StgStack",
-    pj_name=pj_name,
+    pj_name='livestream',
     env_name='stg',
     env=cdk.Environment(
-        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-        region=os.getenv('CDK_DEFAULT_REGION')
+        account='123456789012',  # 自分のAWSアカウントIDに変更
+        region='ap-northeast-1'
     ),
 )
 
 # 本番環境のスタック
 ApiGatewayStack(
     app, "ProdStack",
-    pj_name=pj_name,
+    pj_name='livestream',
     env_name='prod',
     env=cdk.Environment(
-        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-        region=os.getenv('CDK_DEFAULT_REGION')
+        account='123456789012',  # 自分のAWSアカウントIDに変更
+        region='ap-northeast-1'
     ),
 )
 

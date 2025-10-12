@@ -3,22 +3,25 @@ from constructs import Construct
 
 from .lambda_function.mobile.mobile_hello_get import ApiLambdaConstruct
 from .api_gateway.mobile.api_gateway import ApiGatewayConstruct
+from .database.dynamodb import DynamoDBConstruct
 
 
 class ApiGatewayStack(Stack):
     """
-    API Gateway + Lambda のCDKスタック
+    API Gateway + Lambda + DynamoDB のCDKスタック
 
     このスタックは以下のリソースを作成します:
+    - DynamoDB: データストレージ
     - Lambda関数: API Gatewayからのリクエストを処理
     - API Gateway REST API: RESTful APIエンドポイントを提供
     
-    リファクタリングにより、Lambda と API Gateway は
-    それぞれ独立したコンストラクトとして管理されています。
+    リファクタリングにより、各リソースは独立したコンストラクトとして管理されています。
     
     フォルダ構造:
         cdk/
             common_stack.py                 (このファイル)
+            database/
+                dynamodb.py                 (DynamoDB構築)
             lambda_function/
                 mobile/
                     mobile_hello_get.py     (Lambda構築)
@@ -37,11 +40,19 @@ class ApiGatewayStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # DynamoDBテーブルの作成
+        dynamodb_construct = DynamoDBConstruct(
+            self, "DynamoDBConstruct",
+            pj_name=pj_name,
+            env_name=env_name
+        )
+
         # Lambda関数の作成
         mobile_hello_get = ApiLambdaConstruct(
             self, "LambdaConstruct",
             pj_name=pj_name,
-            env_name=env_name
+            env_name=env_name,
+            hello_table=dynamodb_construct.hello_table
         )
 
         # API Gatewayの作成
@@ -53,5 +64,6 @@ class ApiGatewayStack(Stack):
         )
 
         # 作成されたリソースへの参照を保持
+        self.hello_table = dynamodb_construct.hello_table
         self.lambda_function = mobile_hello_get.function
         self.api = api_gateway_construct.api
