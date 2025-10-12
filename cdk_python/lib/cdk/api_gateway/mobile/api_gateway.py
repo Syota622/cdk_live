@@ -30,6 +30,9 @@ class ApiGatewayConstruct(Construct):
             proxy=False,
             rest_api_name=f"{pj_name}-{env_name}-rest-api",
             description="CDK Pythonで作成したシンプルなREST API",
+            deploy_options=apigw.StageOptions(
+                stage_name=env_name,  # ステージ名を環境名に設定（dev/stg/prod）
+            ),
         )
 
         # /hello エンドポイントの追加
