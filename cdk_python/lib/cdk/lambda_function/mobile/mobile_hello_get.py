@@ -20,6 +20,7 @@ class ApiLambdaConstruct(Construct):
         pj_name: str,
         env_name: str,
         hello_table: dynamodb.Table,
+        items_table: dynamodb.Table,
         **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -36,9 +37,11 @@ class ApiLambdaConstruct(Construct):
             description="API Gatewayのバックエンド処理を行うLambda関数",
             environment={
                 "HELLO_TABLE_NAME": hello_table.table_name,
+                "ITEMS_TABLE_NAME": items_table.table_name,
             }
         )
 
         # DynamoDBテーブルへのアクセス権限を付与
         hello_table.grant_read_write_data(self.function)
+        items_table.grant_read_write_data(self.function)
 

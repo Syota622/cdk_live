@@ -52,7 +52,8 @@ class ApiGatewayStack(Stack):
             self, "LambdaConstruct",
             pj_name=pj_name,
             env_name=env_name,
-            hello_table=dynamodb_construct.hello_table
+            hello_table=dynamodb_construct.hello_table,
+            items_table=dynamodb_construct.items_table
         )
 
         # API Gatewayの作成
@@ -65,5 +66,6 @@ class ApiGatewayStack(Stack):
 
         # 作成されたリソースへの参照を保持
         self.hello_table = dynamodb_construct.hello_table
+        self.items_table = dynamodb_construct.items_table
         self.lambda_function = mobile_hello_get.function
         self.api = api_gateway_construct.api

@@ -35,3 +35,16 @@ class DynamoDBConstruct(Construct):
             point_in_time_recovery=True if env_name == 'prod' else False,  # 本番環境のみポイントインタイムリカバリを有効化
         )
 
+        # itemsテーブルの作成
+        self.items_table = dynamodb.Table(
+            self, "ItemsTable",
+            table_name=f"{pj_name}-{env_name}-items",
+            partition_key=dynamodb.Attribute(
+                name="id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,  # オンデマンド課金
+            removal_policy=RemovalPolicy.DESTROY if env_name == 'dev' else RemovalPolicy.RETAIN,  # 開発環境のみ削除可能
+            point_in_time_recovery=True if env_name == 'prod' else False,  # 本番環境のみポイントインタイムリカバリを有効化
+        )
+
