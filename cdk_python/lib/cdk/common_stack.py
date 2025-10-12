@@ -1,16 +1,20 @@
-from aws_cdk import Stack
+from aws_cdk import Stack, CfnOutput
 from constructs import Construct
 
 from .lambda_function.mobile.get.app import ApiLambdaConstruct
 from .api_gateway.mobile.api_gateway import ApiGatewayConstruct
 from .dynamodb.dynamodb import DynamoDBConstruct
+from .s3.s3 import S3Construct
+from .cloudfront.cloudfront import CloudFrontConstruct
 
 
 class ApiGatewayStack(Stack):
     """
-    API Gateway + Lambda + DynamoDB のCDKスタック
+    フルスタックアプリケーションのCDKスタック
 
     このスタックは以下のリソースを作成します:
+    - S3: フロントエンドの静的ファイルをホスティング
+    - CloudFront: CDNでフロントエンドを配信
     - DynamoDB: データストレージ
     - Lambda関数: API Gatewayからのリクエストを処理
     - API Gateway REST API: RESTful APIエンドポイントを提供
@@ -20,6 +24,10 @@ class ApiGatewayStack(Stack):
     フォルダ構造:
         cdk/
             common_stack.py                 (このファイル)
+            s3/
+                s3.py                       (S3構築)
+            cloudfront/
+                cloudfront.py               (CloudFront構築)
             dynamodb/
                 dynamodb.py                 (DynamoDB構築)
             lambda_function/
@@ -40,6 +48,21 @@ class ApiGatewayStack(Stack):
         **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # S3バケットの作成
+        s3_construct = S3Construct(
+            self, "S3Construct",
+            pj_name=pj_name,
+            env_name=env_name
+        )
+
+        # CloudFrontディストリビューションの作成
+        cloudfront_construct = CloudFrontConstruct(
+            self, "CloudFrontConstruct",
+            pj_name=pj_name,
+            env_name=env_name,
+            frontend_bucket=s3_construct.frontend_bucket
+        )
 
         # DynamoDBテーブルの作成
         dynamodb_construct = DynamoDBConstruct(
@@ -66,7 +89,28 @@ class ApiGatewayStack(Stack):
         )
 
         # 作成されたリソースへの参照を保持
+        self.frontend_bucket = s3_construct.frontend_bucket
+        self.cloudfront_distribution = cloudfront_construct.distribution
         self.hello_table = dynamodb_construct.hello_table
         self.items_table = dynamodb_construct.items_table
         self.lambda_function = mobile_hello_get.function
         self.api = api_gateway_construct.api
+
+        # CloudFormationの出力
+        CfnOutput(
+            self, "CloudFrontURL",
+            value=f"https://{cloudfront_construct.domain_name}",
+            description="CloudFront Distribution URL"
+        )
+
+        CfnOutput(
+            self, "ApiGatewayURL",
+            value=api_gateway_construct.api.url,
+            description="API Gateway URL"
+        )
+
+        CfnOutput(
+            self, "S3BucketName",
+            value=s3_construct.frontend_bucket.bucket_name,
+            description="Frontend S3 Bucket Name"
+        )

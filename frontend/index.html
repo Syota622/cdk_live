@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livestream Hub - デプロイ確認</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .status {
+        background: #10b981;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin: 30px 0;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .info {
+        background: #f3f4f6;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .info-item:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #6b7280;
+      }
+
+      .value {
+        color: #111827;
+      }
+
+      .api-test {
+        margin-top: 30px;
+      }
+
+      button {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      button:hover {
+        background: #5568d3;
+      }
+
+      #apiResult {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9fafb;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        display: none;
+      }
+
+      pre {
+        overflow-x: auto;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🎥 Livestream Hub</h1>
+
+      <div class="status">
+        ✅ デプロイ成功！
+      </div>
+
+      <div class="info">
+        <div class="info-item">
+          <span class="label">プロジェクト:</span>
+          <span class="value">Livestream Hub</span>
+        </div>
+        <div class="info-item">
+          <span class="label">環境:</span>
+          <span class="value" id="environment">Development</span>
+        </div>
+        <div class="info-item">
+          <span class="label">デプロイ日時:</span>
+          <span class="value" id="deployTime"></span>
+        </div>
+        <div class="info-item">
+          <span class="label">バージョン:</span>
+          <span class="value">1.0.0</span>
+        </div>
+      </div>
+
+      <div class="api-test">
+        <button onclick="testAPI()">API接続テスト (/hello)</button>
+        <div id="apiResult"></div>
+      </div>
+    </div>
+
+    <script>
+      // 現在時刻を表示
+      document.getElementById('deployTime').textContent = new Date().toLocaleString('ja-JP');
+
+      // API接続テスト
+      async function testAPI() {
+        const resultDiv = document.getElementById('apiResult');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<p>接続中...</p>';
+
+        try {
+          // TODO: API GatewayのURLを設定
+          const apiUrl = 'https://YOUR_API_GATEWAY_URL/dev/hello';
+
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          resultDiv.innerHTML = `
+                    <p style="color: #10b981; font-weight: bold;">✅ API接続成功</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+        } catch (error) {
+          resultDiv.innerHTML = `
+                    <p style="color: #ef4444; font-weight: bold;">❌ API接続失敗</p>
+                    <p style="margin-top: 10px;">API GatewayのURLを設定してください。</p>
+                    <pre style="color: #6b7280;">${error.message}</pre>
+                `;
+        }
+      }
+    </script>
+  </body>
+
+</html>
