@@ -32,6 +32,7 @@ class ApiGatewayStack(Stack):
         scope: Construct, 
         construct_id: str, 
         pj_name: str,
+        env_name: str,
         **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -39,13 +40,15 @@ class ApiGatewayStack(Stack):
         # Lambda関数の作成
         mobile_hello_get = ApiLambdaConstruct(
             self, "LambdaConstruct",
-            pj_name=pj_name
+            pj_name=pj_name,
+            env_name=env_name
         )
 
         # API Gatewayの作成
         api_gateway_construct = ApiGatewayConstruct(
             self, "ApiGatewayConstruct",
             pj_name=pj_name,
+            env_name=env_name,
             lambda_function=mobile_hello_get.function
         )
 

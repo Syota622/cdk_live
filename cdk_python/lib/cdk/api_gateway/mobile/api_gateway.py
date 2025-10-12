@@ -17,6 +17,7 @@ class ApiGatewayConstruct(Construct):
         scope: Construct,
         construct_id: str,
         pj_name: str,
+        env_name: str,
         lambda_function: _lambda.Function,
         **kwargs
     ) -> None:
@@ -27,7 +28,7 @@ class ApiGatewayConstruct(Construct):
             self, "SimpleApi",
             handler=lambda_function,
             proxy=False,
-            rest_api_name=f"{pj_name}-rest-api",
+            rest_api_name=f"{pj_name}-{env_name}-rest-api",
             description="CDK Pythonで作成したシンプルなREST API",
         )
 

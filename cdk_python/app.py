@@ -12,27 +12,41 @@ from cdk.common_stack import ApiGatewayStack
 
 app = cdk.App()
 
-# 環境変数からプロジェクト名を取得（デフォルト: "livestream"）
-pj_name = os.getenv('PJ_NAME', 'livestream')
+# プロジェクト名を取得（コンテキストまたはデフォルト値）
+# cdk deploy DevStack -c pj_name=myproject のように指定可能
+pj_name = app.node.try_get_context('pj_name') or 'livestream'
 
+# 開発環境のスタック
 ApiGatewayStack(
-    app, "ApiGatewayStack",
+    app, "DevStack",
     pj_name=pj_name,
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
+    env_name='dev',
+    env=cdk.Environment(
+        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+        region=os.getenv('CDK_DEFAULT_REGION')
+    ),
+)
 
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
+# ステージング環境のスタック
+ApiGatewayStack(
+    app, "StgStack",
+    pj_name=pj_name,
+    env_name='stg',
+    env=cdk.Environment(
+        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+        region=os.getenv('CDK_DEFAULT_REGION')
+    ),
+)
 
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+# 本番環境のスタック
+ApiGatewayStack(
+    app, "ProdStack",
+    pj_name=pj_name,
+    env_name='prod',
+    env=cdk.Environment(
+        account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+        region=os.getenv('CDK_DEFAULT_REGION')
+    ),
+)
 
 app.synth()
