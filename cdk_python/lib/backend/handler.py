@@ -9,12 +9,17 @@ API Gatewayからのリクエストを受け取り、
         handler.py                  (このファイル: ルーティング処理)
         mobile/
             hello/
-                app.py              (GET /hello の処理)
+                get/
+                    app.py          (GET /hello の処理)
             items/
-                app.py              (GET /items の処理)
-                                    (POST /items の処理) ※将来実装
-                                    (PUT /items の処理) ※将来実装
-                                    (DELETE /items の処理) ※将来実装
+                get/
+                    app.py          (GET /items の処理)
+                post/
+                    app.py          (POST /items の処理) ※将来実装
+                put/
+                    app.py          (PUT /items の処理) ※将来実装
+                delete/
+                    app.py          (DELETE /items の処理) ※将来実装
 """
 import json
 import sys
@@ -23,8 +28,8 @@ import os
 # mobile モジュールをインポートパスに追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mobile'))
 
-from hello import app as hello_get
-from items import app as items_get
+from hello.get import app as hello_get
+from items.get import app as items_get
 
 
 def handler(event, context):

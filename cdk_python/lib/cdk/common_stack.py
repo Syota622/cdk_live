@@ -1,9 +1,9 @@
 from aws_cdk import Stack
 from constructs import Construct
 
-from .lambda_function.mobile.mobile_hello_get import ApiLambdaConstruct
+from .lambda_function.mobile.get.app import ApiLambdaConstruct
 from .api_gateway.mobile.api_gateway import ApiGatewayConstruct
-from .database.dynamodb import DynamoDBConstruct
+from .dynamodb.dynamodb import DynamoDBConstruct
 
 
 class ApiGatewayStack(Stack):
@@ -20,11 +20,12 @@ class ApiGatewayStack(Stack):
     フォルダ構造:
         cdk/
             common_stack.py                 (このファイル)
-            database/
+            dynamodb/
                 dynamodb.py                 (DynamoDB構築)
             lambda_function/
                 mobile/
-                    mobile_hello_get.py     (Lambda構築)
+                    get/
+                        app.py              (Lambda構築)
             api_gateway/
                 mobile/
                     api_gateway.py          (API Gateway構築)

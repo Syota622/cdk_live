@@ -31,7 +31,7 @@ class ApiLambdaConstruct(Construct):
             runtime=_lambda.Runtime.PYTHON_3_12,
             handler="handler.handler",
             code=_lambda.Code.from_asset(
-                os.path.join(os.path.dirname(__file__), "..", "..", "..", "backend")
+                os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "backend")
             ),
             function_name=f"{pj_name}-{env_name}-lambda-api-handler",
             description="API Gatewayのバックエンド処理を行うLambda関数",
