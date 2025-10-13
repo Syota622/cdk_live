@@ -44,4 +44,3 @@ class ApiLambdaConstruct(Construct):
         # DynamoDBテーブルへのアクセス権限を付与
         hello_table.grant_read_write_data(self.function)
         items_table.grant_read_write_data(self.function)
-

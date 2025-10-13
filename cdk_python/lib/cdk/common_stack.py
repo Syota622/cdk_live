@@ -57,11 +57,15 @@ class ApiGatewayStack(Stack):
         )
 
         # CloudFrontディストリビューションの作成
+        # 開発・ステージング環境はBasic認証を有効化、本番環境は無効化
+        enable_basic_auth = env_name in ['dev', 'stg']
+        
         cloudfront_construct = CloudFrontConstruct(
             self, "CloudFrontConstruct",
             pj_name=pj_name,
             env_name=env_name,
-            frontend_bucket=s3_construct.frontend_bucket
+            frontend_bucket=s3_construct.frontend_bucket,
+            enable_basic_auth=enable_basic_auth
         )
 
         # DynamoDBテーブルの作成
@@ -96,21 +100,21 @@ class ApiGatewayStack(Stack):
         self.lambda_function = mobile_hello_get.function
         self.api = api_gateway_construct.api
 
-        # CloudFormationの出力
-        CfnOutput(
-            self, "CloudFrontURL",
-            value=f"https://{cloudfront_construct.domain_name}",
-            description="CloudFront Distribution URL"
-        )
+        # # CloudFormationの出力
+        # CfnOutput(
+        #     self, "CloudFrontURL",
+        #     value=f"https://{cloudfront_construct.domain_name}",
+        #     description="CloudFront Distribution URL"
+        # )
 
-        CfnOutput(
-            self, "ApiGatewayURL",
-            value=api_gateway_construct.api.url,
-            description="API Gateway URL"
-        )
+        # CfnOutput(
+        #     self, "ApiGatewayURL",
+        #     value=api_gateway_construct.api.url,
+        #     description="API Gateway URL"
+        # )
 
-        CfnOutput(
-            self, "S3BucketName",
-            value=s3_construct.frontend_bucket.bucket_name,
-            description="Frontend S3 Bucket Name"
-        )
+        # CfnOutput(
+        #     self, "S3BucketName",
+        #     value=s3_construct.frontend_bucket.bucket_name,
+        #     description="Frontend S3 Bucket Name"
+        # )
