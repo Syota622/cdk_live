@@ -7,20 +7,12 @@ GET /items エンドポイントの処理
 """
 import os
 import boto3
-from decimal import Decimal
 
 
 # DynamoDBクライアントの初期化
 dynamodb = boto3.resource('dynamodb')
 table_name = os.environ.get('ITEMS_TABLE_NAME')
 table = dynamodb.Table(table_name)
-
-
-def decimal_to_float(obj):
-    """DynamoDBの Decimal 型を float に変換"""
-    if isinstance(obj, Decimal):
-        return float(obj)
-    raise TypeError
 
 
 def handler(event, context, query_params):

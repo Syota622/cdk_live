@@ -15,7 +15,7 @@ API Gatewayからのリクエストを受け取り、
                 get/
                     app.py          (GET /items の処理)
                 post/
-                    app.py          (POST /items の処理) ※将来実装
+                    app.py          (POST /items の処理) ✅実装済み
                 put/
                     app.py          (PUT /items の処理) ※将来実装
                 delete/
@@ -24,12 +24,14 @@ API Gatewayからのリクエストを受け取り、
 import json
 import sys
 import os
+from decimal import Decimal
 
 # mobile モジュールをインポートパスに追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mobile'))
 
 from hello.get import app as hello_get
 from items.get import app as items_get
+from items.post import app as items_post
 
 
 def handler(event, context):
@@ -65,8 +67,8 @@ def handler(event, context):
     routes = {
         ('/hello', 'GET'): lambda: hello_get.handler(event, context),
         ('/items', 'GET'): lambda: items_get.handler(event, context, query_params),
+        ('/items', 'POST'): lambda: items_post.handler(event, context, body),
         # 将来追加予定:
-        # ('/items', 'POST'): lambda: items_post_app.handler(event, context, body),
         # ('/items', 'PUT'): lambda: items_put_app.handler(event, context, body),
         # ('/items', 'DELETE'): lambda: items_delete_app.handler(event, context, query_params),
     }
@@ -103,6 +105,15 @@ def handler(event, context):
             })
 
 
+def decimal_default(obj):
+    """
+    JSONシリアライズ時にDecimalをfloatに変換するヘルパー関数
+    """
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
+
+
 def create_response(status_code, body_dict):
     """
     CORS対応のHTTPレスポンスを生成
@@ -122,5 +133,5 @@ def create_response(status_code, body_dict):
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
         },
-        'body': json.dumps(body_dict, ensure_ascii=False)
+        'body': json.dumps(body_dict, ensure_ascii=False, default=decimal_default)
     }
