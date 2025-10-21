@@ -1,1 +1,0 @@
-# Mobile API Gateway construct

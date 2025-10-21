@@ -6,6 +6,7 @@ from .api_gateway.mobile.api_gateway import ApiGatewayConstruct
 from .dynamodb.dynamodb import DynamoDBConstruct
 from .s3.s3 import S3Construct
 from .cloudfront.cloudfront import CloudFrontConstruct
+from .ivs.ivs import IVSConstruct
 
 
 class ApiGatewayStack(Stack):
@@ -18,6 +19,7 @@ class ApiGatewayStack(Stack):
     - DynamoDB: データストレージ
     - Lambda関数: API Gatewayからのリクエストを処理
     - API Gateway REST API: RESTful APIエンドポイントを提供
+    - IVS: ライブストリーミングチャンネル
     
     リファクタリングにより、各リソースは独立したコンストラクトとして管理されています。
     
@@ -92,6 +94,14 @@ class ApiGatewayStack(Stack):
             lambda_function=mobile_hello_get.function
         )
 
+        # IVS（ライブストリーミング）の作成
+        ivs_construct = IVSConstruct(
+            self, "IVSConstruct",
+            pj_name=pj_name,
+            env_name=env_name,
+            recording_bucket=None  # 録画機能は後で追加可能
+        )
+
         # 作成されたリソースへの参照を保持
         self.frontend_bucket = s3_construct.frontend_bucket
         self.cloudfront_distribution = cloudfront_construct.distribution
@@ -99,22 +109,49 @@ class ApiGatewayStack(Stack):
         self.items_table = dynamodb_construct.items_table
         self.lambda_function = mobile_hello_get.function
         self.api = api_gateway_construct.api
+        self.ivs_channel = ivs_construct.channel
+        self.stream_key = ivs_construct.stream_key
 
-        # # CloudFormationの出力
-        # CfnOutput(
-        #     self, "CloudFrontURL",
-        #     value=f"https://{cloudfront_construct.domain_name}",
-        #     description="CloudFront Distribution URL"
-        # )
+        # CloudFormationの出力
+        CfnOutput(
+            self, "CloudFrontURL",
+            value=f"https://{cloudfront_construct.domain_name}",
+            description="CloudFront Distribution URL"
+        )
 
-        # CfnOutput(
-        #     self, "ApiGatewayURL",
-        #     value=api_gateway_construct.api.url,
-        #     description="API Gateway URL"
-        # )
+        CfnOutput(
+            self, "ApiGatewayURL",
+            value=api_gateway_construct.api.url,
+            description="API Gateway URL"
+        )
 
-        # CfnOutput(
-        #     self, "S3BucketName",
-        #     value=s3_construct.frontend_bucket.bucket_name,
-        #     description="Frontend S3 Bucket Name"
-        # )
+        CfnOutput(
+            self, "S3BucketName",
+            value=s3_construct.frontend_bucket.bucket_name,
+            description="Frontend S3 Bucket Name"
+        )
+
+        # IVS関連の出力
+        CfnOutput(
+            self, "IVSPlaybackURL",
+            value=ivs_construct.playback_url,
+            description="IVS Playback URL (視聴用URL)"
+        )
+
+        CfnOutput(
+            self, "IVSIngestEndpoint",
+            value=ivs_construct.ingest_endpoint,
+            description="IVS Ingest Endpoint (配信サーバーURL)"
+        )
+
+        CfnOutput(
+            self, "IVSStreamKey",
+            value=ivs_construct.stream_key.attr_value,
+            description="IVS Stream Key (配信キー - 重要: 秘密にしてください)"
+        )
+
+        CfnOutput(
+            self, "IVSChannelArn",
+            value=ivs_construct.channel_arn,
+            description="IVS Channel ARN"
+        )

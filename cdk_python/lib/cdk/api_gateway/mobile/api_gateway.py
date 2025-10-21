@@ -66,3 +66,5 @@ class ApiGatewayConstruct(Construct):
         items.add_method("PUT")     # アイテム更新（リクエストボディにid含む）
         items.add_method("DELETE")  # アイテム削除（クエリパラメータでid指定）
         
+
+
