@@ -1,7 +1,0 @@
-{
-  "environment": "stg",
-  "account": "987654321098",
-  "region": "ap-northeast-1",
-  "projectName": "livestream-hub", 
-  "stackPrefix": "LiveStreamHub-Stg"
-}
