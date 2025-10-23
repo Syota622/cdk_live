@@ -9,7 +9,7 @@ from .cloudfront.cloudfront import CloudFrontConstruct
 from .ivs.ivs import IVSConstruct
 
 
-class ApiGatewayStack(Stack):
+class CommonStack(Stack):
     """
     フルスタックアプリケーションのCDKスタック
 

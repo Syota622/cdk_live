@@ -7,13 +7,13 @@ import aws_cdk as cdk
 # libフォルダをパスに追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 
-from cdk.common_stack import ApiGatewayStack
+from cdk.common_stack import CommonStack
 
 
 app = cdk.App()
 
 # 開発環境のスタック
-ApiGatewayStack(
+CommonStack(
     app, "DevStack",
     pj_name='livestream',
     env_name='dev',
@@ -24,7 +24,7 @@ ApiGatewayStack(
 )
 
 # ステージング環境のスタック
-ApiGatewayStack(
+CommonStack(
     app, "StgStack",
     pj_name='livestream',
     env_name='stg',
@@ -35,7 +35,7 @@ ApiGatewayStack(
 )
 
 # 本番環境のスタック
-ApiGatewayStack(
+CommonStack(
     app, "ProdStack",
     pj_name='livestream',
     env_name='prod',
